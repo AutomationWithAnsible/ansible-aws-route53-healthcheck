@@ -1,0 +1,21 @@
+---
+
+- name: Manage route 53 Health checks
+  route53_health_check:
+     aws_access_key: "{{ aws_route53_healthcheck_aws_access_key | default(omit) }}"
+     aws_secret_key: "{{ aws_secret_key | default(omit)}}"
+     ec2_url: "{{ aws_route53_healthcheck_ec2_url | default(omit) }}"
+     failure_threshold: "{{ aws_route53_healthcheck_failure_threshold | default(omit) }}"
+     fqdn: "{{ aws_route53_healthcheck_fqdn | default(omit) }}"
+     ip_address: "{{ aws_route53_healthcheck_ip_address | default(omit) }}"
+     port: "{{ aws_route53_healthcheck_port | default(omit) }}"
+     profile: "{{ aws_route53_healthcheck_profile | default(omit) }}"
+     region: "{{ aws_route53_healthcheck_region | default(omit) }}"
+     request_interval: "{{ aws_route53_healthcheck_request_interval | default(omit) }}"
+     resource_path: "{{ aws_route53_healthcheck_resource_path | default(omit) }}"
+     security_token: "{{ aws_route53_healthcheck_security_token | default(omit) }}"
+     state: "{{ aws_route53_healthcheck_state | default(omit) }}"
+     string_match: "{{ aws_route53_healthcheck_string_match | default(omit) }}"
+     type: "{{ aws_route53_healthcheck_type | default(omit) }}"
+     validate_certs: "{{ aws_route53_healthcheck_validate_certs | default(omit) }}"
+  register: rds_server_others
