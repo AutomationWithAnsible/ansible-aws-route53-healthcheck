@@ -1,6 +1,6 @@
 ---
 
-- name: Manage route 53 Health checks
+- name: Manage route53 Health checks
   route53_health_check:
      aws_access_key: "{{ aws_route53_healthcheck_aws_access_key | default(omit) }}"
      aws_secret_key: "{{ aws_secret_key | default(omit)}}"
@@ -18,4 +18,25 @@
      string_match: "{{ aws_route53_healthcheck_string_match | default(omit) }}"
      type: "{{ aws_route53_healthcheck_type | default(omit) }}"
      validate_certs: "{{ aws_route53_healthcheck_validate_certs | default(omit) }}"
-  register: rds_server_others
+  register: aws_route53_healthcheck_output
+  connection: local
+  delegate_to: localhost
+
+- name: Add Healthcheck records to AWS route53
+  route53:
+      command: "{{ item.command | default('create') }}"
+      zone: "{{ item.zone | default(omit) }}"
+      record: "{{ item.record }}"
+      ttl: "{{ item.ttl | default('30') }}"
+      type: "{{ item.type | default('A') }}"
+      value: "{{ item.value | default(aws_route53_healthcheck_record_value) }}"
+      overwrite: "{{ item.overwrite | default('true') }}"
+      retry_interval: "{{ item.retry | default(omit) }}"
+      weight: "{{ item.weight | default(1) }}"
+      identifier: "{{ aws_route53_healthcheck_identifier | default(inventory_hostname) }}"
+
+      health_check: "{{ aws_route53_healthcheck_output.health_check.id }}"
+  with_items: "{{ aws_route53_healthcheck_route53_value }}"
+  when: aws_route53_healthcheck_route53_value | default("") != ""
+  connection: local
+  delegate_to: localhost
