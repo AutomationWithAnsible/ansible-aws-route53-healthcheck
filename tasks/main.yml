@@ -19,6 +19,7 @@
      type: "{{ aws_route53_healthcheck_type | default(omit) }}"
      validate_certs: "{{ aws_route53_healthcheck_validate_certs | default(omit) }}"
   register: aws_route53_healthcheck_output
+  when: aws_route53_healthcheck_enabled
   connection: local
   delegate_to: localhost
 
@@ -34,8 +35,7 @@
       retry_interval: "{{ item.retry | default(omit) }}"
       weight: "{{ item.weight | default(1) }}"
       identifier: "{{ aws_route53_healthcheck_identifier | default(inventory_hostname) }}"
-
-      health_check: "{{ aws_route53_healthcheck_output.health_check.id }}"
+      health_check: "{{ aws_route53_healthcheck_output.health_check.id if aws_route53_healthcheck_enabled else omit }}"
   with_items: "{{ aws_route53_healthcheck_route53_value }}"
   when: aws_route53_healthcheck_route53_value | default("") != ""
   connection: local

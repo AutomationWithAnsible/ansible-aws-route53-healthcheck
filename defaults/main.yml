@@ -1,1 +1,3 @@
 ---
+
+aws_route53_healthcheck_enabled : True
